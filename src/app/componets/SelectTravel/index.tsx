@@ -1,17 +1,6 @@
 import React, { FC, useState } from 'react'
 import { Box, Button, Divider, Typography } from '@mui/material'
 import { Seats } from '../../types'
-import {
-    ContainerBoat,
-    ContainerDivider,
-    ContainerPassengers,
-    DataContainer,
-    MainContainer,
-    Container,
-    ContainerHR,
-    SeatsContainer,
-    SeatsDataContainer,
-} from './styles'
 import PlaceIcon from '@mui/icons-material/Place'
 import FlagIcon from '@mui/icons-material/Flag'
 import ScheduleIcon from '@mui/icons-material/Schedule'
@@ -19,6 +8,16 @@ import DirectionsBoatIcon from '@mui/icons-material/DirectionsBoat'
 import PersonIcon from '@mui/icons-material/Person'
 import ChildCareIcon from '@mui/icons-material/ChildCare'
 import BabyChangingStationIcon from '@mui/icons-material/BabyChangingStation'
+import {
+    ContainerBoat,
+    ContainerDivider,
+    ContainerPassengers,
+    DataContainer,
+    MainContainer,
+    ContainerHR,
+    SeatsContainer,
+    SeatsDataContainer,
+} from './styles'
 
 interface Props {
     from: string
@@ -34,8 +33,8 @@ interface Props {
     hourDeparture: string
     onSelected: () => void
     data?: Seats[] | undefined
-
     isOpen?: boolean
+    goBuy: (seat: string) => void
 }
 
 const SelectTravel: FC<Props> = ({
@@ -52,7 +51,7 @@ const SelectTravel: FC<Props> = ({
     hourArrival,
     hourDeparture,
     data,
-    isOpen,
+    goBuy,
 }) => {
     const [isSeatOpen, setIsSeatOpen] = useState(false)
 
@@ -217,6 +216,7 @@ const SelectTravel: FC<Props> = ({
                                             color: 'white',
                                         }}
                                         variant="contained"
+                                        onClick={() => goBuy(seat.code)} // Llama a goBuy con el código del asiento
                                     >
                                         {seat.name}
                                     </Button>

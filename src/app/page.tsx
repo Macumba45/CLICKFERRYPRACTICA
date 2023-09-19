@@ -11,7 +11,6 @@ import logic from './logic'
 const Home: FC = () => {
     const {
         showOffers,
-        setShowOffers,
         route,
         setRoute,
         time,
@@ -28,21 +27,13 @@ const Home: FC = () => {
         getFinalPrice,
         formatDate,
         routes,
-        showSeats,
-        setShowSeats,
         seatsByTravel,
-        dataSeats,
+        handleBooking,
     } = logic()
-
-    console.log(seatsByTravel)
 
     useEffect(() => {
         getDepartures()
     }, [route, time])
-
-    const handleBooking = () => {
-        setShowOffers(true)
-    }
 
     return (
         <>
@@ -84,6 +75,12 @@ const Home: FC = () => {
                             onSelected={() =>
                                 getSeats(travel.time.slice(0, -1))
                             }
+                            goBuy={selectedSeatCode => {
+                                getFinalPrice(
+                                    travel.time.slice(0, -1),
+                                    selectedSeatCode
+                                )
+                            }}
                         />
                     ))}
             </CardContainer>

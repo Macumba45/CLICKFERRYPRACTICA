@@ -64,7 +64,6 @@ export const logic = () => {
                     ...prevState,
                     [selectedTravelTime]: responseData,
                 }))
-                console.log('Respuesta JSON:', responseData)
             } else {
                 throw new Error(`HTTP error! Status: ${response.status}`)
             }
@@ -73,8 +72,11 @@ export const logic = () => {
         }
     }
 
-    const getFinalPrice = async (selectedTravelTime: any, seat: any) => {
-        const seatPrice = `http://localhost:3000/departures/accomodations?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}&accommodation=${seat}`
+    const getFinalPrice = async (
+        selectedTravelTime: any,
+        selectedSeatCode: any
+    ) => {
+        const seatPrice = `http://localhost:3000/departures/accomodations/seats?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}&accommodation=${selectedSeatCode}`
         try {
             const response = await fetch(seatPrice, {
                 method: 'GET',
@@ -101,6 +103,10 @@ export const logic = () => {
         return formattedDateOb
     }
 
+    const handleBooking = () => {
+        setShowOffers(true)
+    }
+
     return {
         showOffers,
         setShowOffers,
@@ -124,6 +130,7 @@ export const logic = () => {
         setShowSeats,
         dataSeats,
         seatsByTravel,
+        handleBooking,
     }
 }
 
