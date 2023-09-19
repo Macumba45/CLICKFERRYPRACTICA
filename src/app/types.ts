@@ -6,3 +6,8 @@ export type Departure = {
     passengers: number
     vehicle: number
 }
+
+export type Seats = {
+    code: string
+    name: string
+}

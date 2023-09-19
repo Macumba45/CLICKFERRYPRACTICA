@@ -45,38 +45,73 @@ const TravelBooking: FC<TravelBookingProps> = ({
 }) => {
     return (
         <Container maxWidth="md">
-            <Typography marginBottom={5} variant="h4" gutterBottom>
-                ClickFerry - Reserva tu viaje
-            </Typography>
-            <FormControl fullWidth variant="outlined" margin="dense">
-                <InputLabel>Desde</InputLabel>
-                <Select
-                    label="Desde"
-                    value={route}
-                    onChange={e => onFromChange(e.target.value)}
-                >
-                    <MenuItem value="ALGECEUT">Algeciras - Ceuta</MenuItem>
-                    <MenuItem value="CEUTALGE">Ceuta - Algeciras</MenuItem>
-                </Select>
-            </FormControl>
-
-            <TextField
-                label="Fecha de Ida"
-                variant="outlined"
-                type="date"
-                fullWidth
-                value={departureDate}
-                onChange={e => onDepartureDateChange(e.target.value)} // Cambio aquí
-                margin="dense"
-                InputLabelProps={{
-                    shrink: true,
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
                 }}
-            />
+            >
+                <FormControl variant="outlined" margin="dense">
+                    <InputLabel sx={{ mr: 2, ml: 2 }}>Elige tú ruta</InputLabel>
+                    <Select
+                        label="Elige tú ruta"
+                        sx={{
+                            color: '#004998',
+                            '&hover:': { color: '#004998' },
+                            outline: 'none',
+                            width: '200px',
+                            mr: 2,
+                            ml: 2,
+                        }}
+                        value={route}
+                        onChange={e => onFromChange(e.target.value)}
+                    >
+                        <MenuItem value="ALGECEUT">Algeciras - Ceuta</MenuItem>
+                        <MenuItem value="CEUTALGE">Ceuta - Algeciras</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <TextField
+                    label="Fecha de Ida"
+                    sx={{ color: '#004998', ml: 2, width: '200px', mr: 2 }}
+                    variant="outlined"
+                    type="date"
+                    value={departureDate}
+                    onChange={e => onDepartureDateChange(e.target.value)} // Cambio aquí
+                    margin="dense"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
+            </Box>
             <Box mt={3}>
-                <Typography variant="h6">Número de Pasajeros</Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                        <Typography variant="subtitle1">Adultos</Typography>
+                <Typography
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    marginBottom={4}
+                    marginTop={4}
+                    variant="h6"
+                >
+                    Número de Pasajeros
+                </Typography>
+                <Grid
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    container
+                    spacing={2}
+                >
+                    <Grid marginRight={2} item>
+                        <Typography textAlign="center" variant="subtitle1">
+                            Adultos
+                        </Typography>
                         <IconButton
                             color="primary"
                             onClick={() => onAdultsChange(adults + 1)}
@@ -91,8 +126,10 @@ const TravelBooking: FC<TravelBookingProps> = ({
                             <RemoveIcon />
                         </IconButton>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="subtitle1">Niños</Typography>
+                    <Grid item>
+                        <Typography textAlign="center" variant="subtitle1">
+                            Niños
+                        </Typography>
                         <IconButton
                             color="primary"
                             onClick={() => onChildrenChange(children + 1)}
@@ -107,8 +144,10 @@ const TravelBooking: FC<TravelBookingProps> = ({
                             <RemoveIcon />
                         </IconButton>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="subtitle1">Bebés</Typography>
+                    <Grid marginLeft={2} item>
+                        <Typography textAlign="center" variant="subtitle1">
+                            Bebés
+                        </Typography>
                         <IconButton
                             color="primary"
                             onClick={() => onInfantsChange(infants + 1)}
@@ -127,6 +166,10 @@ const TravelBooking: FC<TravelBookingProps> = ({
             </Box>
             <Button
                 sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+
                     mt: 2,
                     backgroundColor: '#c7cd00',
                     ':hover': { backgroundColor: '#858900' },

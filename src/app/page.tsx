@@ -4,7 +4,8 @@ import { FC, memo, useState, useEffect } from 'react'
 import { CardContainer, MainContainer } from './styles'
 import TravelBooking from './componets/TravelBooking'
 import SelectTravel from './componets/SelectTravel'
-import { Departure } from './types'
+import { Departure, Seats } from './types'
+import Header from './componets/Header'
 
 const Home: FC = () => {
     const date = new Date()
@@ -14,7 +15,9 @@ const Home: FC = () => {
     const [adults, setAdults] = useState<number>(1)
     const [children, setChildren] = useState<number>(0)
     const [infants, setInfants] = useState<number>(0)
-    const [dataTravels, setDataTravels] = useState<Departure[]>([]) // Cambio aquí
+    const [dataTravels, setDataTravels] = useState<Departure[]>([])
+    const [dataSeats, setDataSeats] = useState<Seats[]>([])
+    const [showSeats, setShowSeats] = useState<boolean>(false)
     const API_URL = `http://localhost:3000/departures?route=${route}&time=${time}`
     const API_URL_DIRECT = `https://tadpole.clickferry.app/departures?route=${route}&time=${time}`
     const API_URL_ACOMMODATION = `http://localhost:3000/departures/accomodations?route=${route}&time=${time}&adults=${adults}&children=${children}&babies=${infants}`
@@ -48,16 +51,7 @@ const Home: FC = () => {
         }
     }
 
-    useEffect(() => {
-        getDepartures()
-    }, [route, time])
-
-    const handleBooking = () => {
-        // Aquí puedes realizar la acción de reserva con los valores actuales
-        setShowOffers(true)
-    }
-
-    const handleReservation = async (selectedTravelTime: any) => {
+    const getSeats = async (selectedTravelTime: any) => {
         // Construir la URL con los parámetros actuales
         const reservationURL = `http://localhost:3000/departures/accomodations?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}`
 
@@ -71,12 +65,10 @@ const Home: FC = () => {
             })
 
             if (response.ok) {
-                // Si la respuesta es exitosa, obtén la respuesta como JSON
                 const responseData = await response.json()
+                setShowSeats(true)
+                setDataSeats(responseData)
                 console.log('Respuesta JSON:', responseData)
-
-                // Aquí puedes procesar la respuesta JSON como desees
-                // Por ejemplo, actualizar el estado del componente con los datos
             } else {
                 throw new Error(`HTTP error! Status: ${response.status}`)
             }
@@ -85,20 +77,46 @@ const Home: FC = () => {
         }
     }
 
+    const getFinalPrice = async (selectedTravelTime: any, seat: any) => {
+        const seatPrice = `http://localhost:3000/departures/accomodations?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}&accommodation=${seat}`
+        try {
+            const response = await fetch(seatPrice, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (response.ok) {
+                const responseData = await response.json()
+                console.log('Respuesta JSON:', responseData)
+            }
+        } catch (error) {
+            console.error('Error al realizar la solicitud:', error)
+        }
+    }
+
     function formatDate(date: any) {
         const dateObject = new Date(date)
-        const dayOb = dateObject.getDate() // Esto obtiene el día (1-31)
+        const dayOb = dateObject.getDate()
         const monthOb = new Intl.DateTimeFormat('es-ES', {
             month: 'short',
         }).format(dateObject)
-        // Formatea la fecha como "day of month"
         const formattedDateOb = `${dayOb} ${monthOb}`
         return formattedDateOb
+    }
+
+    useEffect(() => {
+        getDepartures()
+    }, [route, time])
+
+    const handleBooking = () => {
+        setShowOffers(true)
     }
 
     return (
         <>
             <MainContainer>
+                <Header />
                 <TravelBooking
                     route={route}
                     departureDate={time}
@@ -107,9 +125,9 @@ const Home: FC = () => {
                     infants={infants}
                     onFromChange={value => setRoute(value)}
                     onDepartureDateChange={value => setTime(value)}
-                    onAdultsChange={value => setAdults(value)} // Aquí debes implementar la lógica
-                    onChildrenChange={value => setChildren(value)} // Aquí debes implementar la lógica
-                    onInfantsChange={value => setInfants(value)} // Aquí debes implementar la lógica
+                    onAdultsChange={value => setAdults(value)}
+                    onChildrenChange={value => setChildren(value)}
+                    onInfantsChange={value => setInfants(value)}
                     onBooking={handleBooking}
                 />
             </MainContainer>
@@ -132,8 +150,13 @@ const Home: FC = () => {
                             children={children}
                             infants={infants}
                             onSelected={() =>
-                                handleReservation(travel.time.slice(0, -1))
+                                getSeats(travel.time.slice(0, -1))
                             }
+                            isOpen={showSeats}
+                            data={dataSeats.map(seat => ({
+                                code: seat.code,
+                                name: seat.name,
+                            }))}
                         />
                     ))}
             </CardContainer>

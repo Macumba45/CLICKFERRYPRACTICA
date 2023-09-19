@@ -8,7 +8,7 @@ export const MainContainer = styled.div`
     justify-content: center;
     margin: 2rem auto;
     width: 100%;
-    height: 450px;
+    height: auto;
 `
 
 export const DataContainer = styled.div`
@@ -46,7 +46,7 @@ export const ContainerPassengers = styled.div`
     align-items: center;
     background-color: #004998;
     height: 40px;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     border-radius: 20px;
 `
 
@@ -70,4 +70,15 @@ export const ContainerHR = styled.div`
     align-items: center;
     justify-content: center;
     margin: 0 auto;
+`
+export const SeatsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+`
+
+export const SeatsDataContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `

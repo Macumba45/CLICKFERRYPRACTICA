@@ -1,5 +1,6 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Box, Button, Divider, Typography } from '@mui/material'
+import { Seats } from '../../types'
 import {
     ContainerBoat,
     ContainerDivider,
@@ -8,6 +9,8 @@ import {
     MainContainer,
     Container,
     ContainerHR,
+    SeatsContainer,
+    SeatsDataContainer,
 } from './styles'
 import PlaceIcon from '@mui/icons-material/Place'
 import FlagIcon from '@mui/icons-material/Flag'
@@ -30,6 +33,9 @@ interface Props {
     hourArrival: string
     hourDeparture: string
     onSelected: () => void
+    data?: Seats[] | undefined
+
+    isOpen?: boolean
 }
 
 const SelectTravel: FC<Props> = ({
@@ -45,7 +51,15 @@ const SelectTravel: FC<Props> = ({
     infants,
     hourArrival,
     hourDeparture,
+    data,
+    isOpen,
 }) => {
+    const [isSeatOpen, setIsSeatOpen] = useState(false)
+
+    const handleToggleSeat = () => {
+        setIsSeatOpen(!isSeatOpen)
+    }
+
     return (
         <MainContainer>
             <ContainerBoat>
@@ -156,13 +170,62 @@ const SelectTravel: FC<Props> = ({
                     mb: 2,
                     backgroundColor: '#c7cd00',
                     ':hover': { backgroundColor: '#858900' },
+                    display: isSeatOpen ? 'none' : 'flex',
                 }}
-                onClick={onSelected}
+                onClick={() => {
+                    onSelected()
+                    handleToggleSeat()
+                }}
                 variant="contained"
                 color="primary"
             >
-                Ver asientos
+                {isSeatOpen ? 'Cerrar' : 'Ver asientos'}
             </Button>
+            <SeatsContainer>
+                {isSeatOpen && (
+                    <>
+                        <SeatsDataContainer>
+                            <Typography
+                                sx={{
+                                    backgroundColor: '#c7cd00',
+                                    padding: 1,
+                                    color: 'white',
+                                    borderRadius: '5px',
+                                    mb: 2,
+                                    mt: 2,
+                                    mr: 2,
+                                }}
+                                fontSize={15}
+                                textAlign="center"
+                            >
+                                {data == null || data.length === 0
+                                    ? 'No hay asientos :('
+                                    : 'Selecciona tu asiento'}
+                            </Typography>
+
+                            {data?.map(seat => (
+                                <div
+                                    style={{ marginBottom: 0 }}
+                                    key={seat.code}
+                                >
+                                    {/* <Typography textAlign='center' sx={{ mb: 0 }} >{seat.code}</Typography> */}
+                                    <Button
+                                        sx={{
+                                            ml: 1,
+                                            mr: 1,
+                                            backgroundColor: '#004998',
+                                            color: 'white',
+                                        }}
+                                        variant="contained"
+                                    >
+                                        {seat.name}
+                                    </Button>
+                                </div>
+                            ))}
+                        </SeatsDataContainer>
+                    </>
+                )}
+            </SeatsContainer>
         </MainContainer>
     )
 }
