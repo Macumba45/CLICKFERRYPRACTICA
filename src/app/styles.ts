@@ -13,9 +13,10 @@ export const MainContainer = styled.div`
 export const CardContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
+    max-width: 900px;
+    width: 90%;
     justify-content: center;
-    margin-top: 2rem;
+    margin: 1rem auto;
     align-items: center;
 `
 

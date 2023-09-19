@@ -126,7 +126,11 @@ const TravelBooking: FC<TravelBookingProps> = ({
                 </Grid>
             </Box>
             <Button
-                sx={{ mt: 2 }}
+                sx={{
+                    mt: 2,
+                    backgroundColor: '#c7cd00',
+                    ':hover': { backgroundColor: '#858900' },
+                }}
                 variant="contained"
                 color="primary"
                 onClick={onBooking}

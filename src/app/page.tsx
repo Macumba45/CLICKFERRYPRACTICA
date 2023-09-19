@@ -16,6 +16,7 @@ const Home: FC = () => {
     const [infants, setInfants] = useState<number>(0)
     const [dataTravels, setDataTravels] = useState<Departure[]>([]) // Cambio aquí
     const API_URL = `http://localhost:3000/departures?route=${route}&time=${time}`
+    const API_URL_DIRECT = `https://tadpole.clickferry.app/departures?route=${route}&time=${time}`
     const API_URL_ACOMMODATION = `http://localhost:3000/departures/accomodations?route=${route}&time=${time}&adults=${adults}&children=${children}&babies=${infants}`
 
     const routes = [
@@ -54,24 +55,47 @@ const Home: FC = () => {
     const handleBooking = () => {
         // Aquí puedes realizar la acción de reserva con los valores actuales
         setShowOffers(true)
-        console.log('API_URL:', API_URL)
     }
 
-    const handleReservation = () => {
-        // Redirigir a la nueva URL
-        console.log('API_URL_ACOMMODATION:', API_URL_ACOMMODATION)
-        // window.location.href = API_URL_ACOMMODATION;
+    const handleReservation = async (selectedTravelTime: any) => {
+        // Construir la URL con los parámetros actuales
+        const reservationURL = `http://localhost:3000/departures/accomodations?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}`
+
+        try {
+            // Realizar la solicitud GET a la URL de reserva
+            const response = await fetch(reservationURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+            if (response.ok) {
+                // Si la respuesta es exitosa, obtén la respuesta como JSON
+                const responseData = await response.json()
+                console.log('Respuesta JSON:', responseData)
+
+                // Aquí puedes procesar la respuesta JSON como desees
+                // Por ejemplo, actualizar el estado del componente con los datos
+            } else {
+                throw new Error(`HTTP error! Status: ${response.status}`)
+            }
+        } catch (error) {
+            console.error('Error al realizar la solicitud:', error)
+        }
     }
 
-    function formatDate(date: Date) {
-        return date.toLocaleDateString('es-ES', {
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-        })
+    function formatDate(date: any) {
+        const dateObject = new Date(date)
+        const dayOb = dateObject.getDate() // Esto obtiene el día (1-31)
+        const monthOb = new Intl.DateTimeFormat('es-ES', {
+            month: 'short',
+        }).format(dateObject)
+        // Formatea la fecha como "day of month"
+        const formattedDateOb = `${dayOb} ${monthOb}`
+        return formattedDateOb
     }
+
     return (
         <>
             <MainContainer>
@@ -91,33 +115,27 @@ const Home: FC = () => {
             </MainContainer>
             <CardContainer>
                 {showOffers &&
-                    dataTravels.map(travel => {
-                        const formattedTime = formatDate(new Date(travel.time))
-                        const formattedArrival = formatDate(
-                            new Date(travel.arrival)
-                        )
-                        return (
-                            <>
-                                <SelectTravel
-                                    key={travel.time}
-                                    from={
-                                        routes.find(r => r.value === route)
-                                            ?.from || ''
-                                    }
-                                    to={
-                                        routes.find(r => r.value === route)
-                                            ?.to || ''
-                                    }
-                                    time={formattedTime}
-                                    arrival={formattedArrival}
-                                    operator={travel.operator}
-                                    ship={travel.ship}
-                                    passengers={adults}
-                                    onSelected={() => console.log(travel)}
-                                />
-                            </>
-                        )
-                    })}
+                    dataTravels.map(travel => (
+                        <SelectTravel
+                            key={travel.time}
+                            from={
+                                routes.find(r => r.value === route)?.from || ''
+                            }
+                            to={routes.find(r => r.value === route)?.to || ''}
+                            hourArrival={travel.time.slice(11, 16)}
+                            hourDeparture={travel.arrival.slice(11, 16)}
+                            departure={formatDate(travel.time.slice(0, -10))}
+                            arrival={formatDate(travel.arrival.slice(0, -10))}
+                            operator={travel.operator}
+                            ship={travel.ship}
+                            adults={adults}
+                            children={children}
+                            infants={infants}
+                            onSelected={() =>
+                                handleReservation(travel.time.slice(0, -1))
+                            }
+                        />
+                    ))}
             </CardContainer>
         </>
     )
