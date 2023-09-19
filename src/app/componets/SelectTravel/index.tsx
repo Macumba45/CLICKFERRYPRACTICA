@@ -35,6 +35,9 @@ interface Props {
     data?: Seats[] | undefined
     isOpen?: boolean
     goBuy: (seat: string) => void
+    price: {
+        total: number
+    }
 }
 
 const SelectTravel: FC<Props> = ({
@@ -52,6 +55,7 @@ const SelectTravel: FC<Props> = ({
     hourDeparture,
     data,
     goBuy,
+    price,
 }) => {
     const [isSeatOpen, setIsSeatOpen] = useState(false)
 
@@ -216,7 +220,7 @@ const SelectTravel: FC<Props> = ({
                                             color: 'white',
                                         }}
                                         variant="contained"
-                                        onClick={() => goBuy(seat.code)} // Llama a goBuy con el código del asiento
+                                        onClick={() => goBuy(seat.code)}
                                     >
                                         {seat.name}
                                     </Button>
@@ -226,6 +230,23 @@ const SelectTravel: FC<Props> = ({
                     </>
                 )}
             </SeatsContainer>
+            {price.total !== 0 && (
+                <Typography
+                    sx={{
+                        backgroundColor: '#c7cd00',
+                        padding: 1,
+                        color: 'white',
+                        borderRadius: '5px',
+                        mb: 2,
+                        mt: 2,
+                        mr: 2,
+                    }}
+                    fontSize={15}
+                    textAlign="center"
+                >
+                    Precio: {price.total.toString()}€
+                </Typography>
+            )}
         </MainContainer>
     )
 }

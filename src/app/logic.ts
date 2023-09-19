@@ -12,6 +12,7 @@ export const logic = () => {
     const [dataTravels, setDataTravels] = useState<Departure[]>([])
     const [dataSeats, setDataSeats] = useState<Seats[]>([])
     const [showSeats, setShowSeats] = useState<boolean>(false)
+    const [price, setPrice] = useState<number>(0)
     const API_URL = `http://localhost:3000/departures?route=${route}&time=${time}`
     const API_URL_DIRECT = `https://tadpole.clickferry.app/departures?route=${route}&time=${time}`
     const API_URL_ACOMMODATION = `http://localhost:3000/departures/accomodations?route=${route}&time=${time}&adults=${adults}&children=${children}&babies=${infants}`
@@ -71,14 +72,17 @@ export const logic = () => {
             console.error('Error al realizar la solicitud:', error)
         }
     }
+    const [pricesByTravel, setPricesByTravel] = useState<{
+        [key: string]: number
+    }>({})
 
     const getFinalPrice = async (
         selectedTravelTime: any,
         selectedSeatCode: any
     ) => {
-        const seatPrice = `http://localhost:3000/departures/accomodations/seats?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}&accommodation=${selectedSeatCode}`
+        const seatPriceURL = `http://localhost:3000/departures/accomodations/seats?route=${route}&time=${selectedTravelTime}&adults=${adults}&children=${children}&babies=${infants}&accommodation=${selectedSeatCode}`
         try {
-            const response = await fetch(seatPrice, {
+            const response = await fetch(seatPriceURL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -86,7 +90,10 @@ export const logic = () => {
             })
             if (response.ok) {
                 const responseData = await response.json()
-                console.log('Respuesta JSON:', responseData)
+                setPricesByTravel(prevState => ({
+                    ...prevState,
+                    [selectedTravelTime]: responseData.total,
+                }))
             }
         } catch (error) {
             console.error('Error al realizar la solicitud:', error)
@@ -131,6 +138,9 @@ export const logic = () => {
         dataSeats,
         seatsByTravel,
         handleBooking,
+        price,
+        setPrice,
+        pricesByTravel,
     }
 }
 

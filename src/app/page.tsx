@@ -29,6 +29,7 @@ const Home: FC = () => {
         routes,
         seatsByTravel,
         handleBooking,
+        pricesByTravel,
     } = logic()
 
     useEffect(() => {
@@ -81,6 +82,11 @@ const Home: FC = () => {
                                     selectedSeatCode
                                 )
                             }}
+                            price={{
+                                total:
+                                    pricesByTravel[travel.time.slice(0, -1)] ||
+                                    0,
+                            }} // Usar el precio correspondiente o 0 si no está definido }}
                         />
                     ))}
             </CardContainer>
